@@ -1,0 +1,126 @@
+body{
+    background-color: wheat;
+    margin:0;
+    #items-list{
+        @media all and (max-width: 800px){
+            height: auto;
+            gap:5px;
+            &>.card{
+                width: calc(20% - 5px * 4 / 5) !important;
+            }
+            
+        }
+        height: 80vh;
+        aspect-ratio: 1;
+        max-width: 90%;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 25px;
+        position: fixed;
+        top: 10vh;
+        bottom: 10vh;
+        left: 0;
+        right: 0;
+        &>.card{
+            cursor: pointer;
+            width: calc(20% - 25px * 4 / 5);
+            aspect-ratio: 1;
+            object-fit: contain;
+            image-rendering: pixelated;
+            box-shadow: 0 0 10px #000;
+            transform-style: preserve-3d;
+            transform: rotateY(180deg);
+            position: relative;
+            //backface-visibility: hidden;
+            transition: transform 0.5s ease, box-shadow 140ms ease-in-out;
+            &:hover:not(.hidden){
+                box-shadow: 0 0 20px #000;
+            }
+            &.reveal{
+                transform: rotateY(0deg);
+            }
+            &.hidden, &.hidden *{
+                filter: grayscale(1);
+                pointer-events: none;
+                
+                background-color: grey;
+            }
+            &>p, &>img{
+                position: absolute;
+                width: calc(100% - 20px);
+                height: calc(100% - 20px);
+                top: 0;
+                left: 0;
+                padding:10px;
+                margin:auto;
+                object-fit: contain;
+                transform-style: preserve-3d;
+                
+            }
+            &>p{
+                color: #00000000;
+            }
+            &>img{
+                backface-visibility: hidden;
+            }
+        }
+    }
+    #life-bar{
+        position: fixed;
+        display: flex;
+        bottom: 2vh;
+        left:0;
+        right: 0;
+        margin: auto;
+        gap: 1px;
+        width: fit-content;
+        
+        &>img{
+            width: 32px;
+            image-rendering: pixelated;
+            
+        }
+    }
+    #lost-screen{
+        &.show{
+            opacity: 1;
+            pointer-events: all;
+        }
+        position: fixed;
+        opacity:0;
+        pointer-events: none;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle, transparent, red);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        p{
+            font-size: 4em;
+            text-shadow: 2px 2px #000;
+            font-weight: 600;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        a{
+            position: relative;
+            /* Basic button styles */
+            display: inline-block;
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            background-color: #2d0123b3; /* Button background color */
+            border-radius: 10px; /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
+        &>*{
+            width: fit-content;
+        }
+    }
+}

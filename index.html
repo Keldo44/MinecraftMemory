@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Minecraft Bingo</title>
+</head>
+<body>
+    <div  id="items-list"></div>
+    <div id="life-bar"></div>
+    <div id="lost-screen">
+        <p>Has perdido</p>
+        <a href="./">Reiniciar</a>
+    </div>
+    <script>
+        const lifes = 8;
+        let revealedCards = 0;
+        let rev1;
+        let isChecking = false;
+
+
+
+        function addHearts(){
+            const lifeBar = document.getElementById("life-bar");
+            console.log(lifeBar);
+            for (var i = 0; i < lifes; i++){
+                const heart = document.createElement('img');
+                heart.src = 'assets/icons/heart.png';
+                console.log(heart);
+                lifeBar.appendChild(heart);
+            }
+        }
+
+        async function fetchItems() {
+            try {
+                const response = await fetch('http://kerion.ddns.net:3000/items');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const items = await response.json();
+                displayItems(items);
+                clickCardEvents();
+            } catch (error) {
+                console.error('Failed to fetch items:', error);
+            }
+        }
+
+        function displayItems(items) {
+            const itemsList = document.getElementById('items-list');
+            
+            
+            items.forEach(item => {    
+                const imgElement = document.createElement('img');
+                imgElement.src = item.img;
+                imgElement.alt = item.name;
+                imgElement.title = item.name;
+                imgElement.width = 32; // Set the width as per your requirement
+                imgElement.height = 32; // Set the height as per your requirement
+
+                const nameElement = document.createElement('p');
+                
+
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.appendChild(imgElement);
+                card.appendChild(nameElement);
+
+                itemsList.appendChild(card);
+                
+            });
+            
+            revealCards();
+        }
+
+        function revealCards() {
+            const cards = document.querySelectorAll(".card");
+            cards.forEach((card, index) => {
+               // console.log(`Revealing card ${index + 1}`);
+                const values = [100, 200, 300, 400, 500, 200, 200, 300, 400, 500, 300, 300, 300, 400, 500, 400, 400, 400, 400, 500, 500, 500, 500, 500, 500];
+                setTimeout(() => {
+                    //card.classList.add("reveal");
+                    //console.log(`Card ${index + 1} revealed`);
+                }, values[index % values.length]); // Adjust delay as needed
+                setTimeout(() => {
+                    card.classList.add("reveal");
+                    //console.log(`Card ${index + 1} revealed`);
+                },  values[index % values.length]); // Adjust delay as needed
+
+                setTimeout(() => {
+                    card.classList.remove("reveal");
+                    //console.log(`Card ${index + 1} revealed`);
+                }, values[index % values.length] + 3000); // Adjust delay as needed
+            });
+        }
+        
+        function clickCardEvents(){
+            const cards = document.querySelectorAll ("#items-list>*");
+            // Select all card elements
+            cards.forEach(card => {
+                // Add a click event listener to each card
+                card.addEventListener("click", (event) => {
+                    // Check if the card is already revealed or if a check is in progress
+                    let is_reveal = card.classList.contains("reveal");
+                    if (is_reveal || isChecking) {
+                        return;
+                    }
+
+                    // If no cards are revealed
+                    if (revealedCards == 0) {
+                        revealedCards = 1;
+                        card.classList.add("reveal");
+                        rev1 = card;
+                    } 
+                    // If one card is already revealed
+                    else if (revealedCards == 1) {
+                        revealedCards = 2;
+                        card.classList.add("reveal");
+                        rev2 = card;
+                        isChecking = true; // Prevent further clicks
+
+                        // Check for a match after a short delay
+                        setTimeout(() => {
+                            if (rev1.querySelector('img').src == rev2.querySelector('img').src) {
+                                rev1.classList.add("hidden");
+                                rev2.classList.add("hidden");
+                            } 
+                            // If the cards do not match, hide them again
+                            else {
+                                damage(1);
+                                rev1.classList.remove("reveal");
+                                rev2.classList.remove("reveal");
+                            }
+                            // Reset the variables for the next attempt
+                            rev1 = null;
+                            rev2 = null;
+                            revealedCards = 0;
+                            isChecking = false; // Allow clicks again
+                        }, 500);
+                    }
+                });
+            });
+
+        }
+        
+        function damage(dmg) {
+            const lifes = document.querySelectorAll("#life-bar>*");
+            console.log(lifes);
+            if (lifes[1].src.includes("void_heart.png")){
+             youLost();
+            }
+            for (let i = lifes.length-1; i > -1; i--) {       
+                console.log(lifes[i]); 
+                if (lifes[i].src.includes("/heart.png")) {
+                    console.log(lifes[i]+"contains /heart.png");
+                    lifes[i].src = lifes[i].src.replace("heart.png", "void_heart.png");
+                    dmg--;
+                    if(dmg == 0){
+                        i = 0;
+                    }
+                } 
+            }
+        }
+
+        function youLost(){
+            document.getElementById("lost-screen").classList.add("show");
+        }
+        fetchItems();
+        addHearts();
+        
+    </script>
+</body>
+</html>
