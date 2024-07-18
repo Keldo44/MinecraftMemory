@@ -1,6 +1,9 @@
 body{
     background-color: wheat;
     margin:0;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
     #items-list{
         @media all and (max-width: 800px){
             height: auto;
@@ -33,14 +36,17 @@ body{
             box-shadow: 0 0 10px #000;
             transform-style: preserve-3d;
             transform: rotateY(180deg);
+            
             position: relative;
             //backface-visibility: hidden;
             transition: transform 0.5s ease, box-shadow 140ms ease-in-out;
+            transition-delay: opacity 1s;
             &:hover:not(.hidden){
                 box-shadow: 0 0 20px #000;
             }
             &.reveal{
                 transform: rotateY(0deg);
+                
             }
             &.hidden, &.hidden *{
                 filter: grayscale(1);

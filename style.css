@@ -1,6 +1,9 @@
 body {
   background-color: wheat;
   margin: 0;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 body #items-list {
   height: 80vh;
@@ -38,6 +41,7 @@ body #items-list > .card {
   transform: rotateY(180deg);
   position: relative;
   transition: transform 0.5s ease, box-shadow 140ms ease-in-out;
+  transition-delay: opacity 1s;
 }
 body #items-list > .card:hover:not(.hidden) {
   box-shadow: 0 0 20px #000;

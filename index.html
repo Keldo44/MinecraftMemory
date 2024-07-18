@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="style.css">
     <title>Minecraft Bingo</title>
 </head>
-<body>
-    <div  id="items-list"></div>
+<body draggable="false" ondragstart="return false;" ondrop="return false;">
+    <div  id="items-list" draggable="false"></div>
     <div id="life-bar"></div>
     <div id="lost-screen">
         <p>Has perdido</p>
@@ -53,6 +53,7 @@
             
             items.forEach(item => {    
                 const imgElement = document.createElement('img');
+                imgElement.draggable = false;
                 imgElement.src = item.img;
                 imgElement.alt = item.name;
                 imgElement.title = item.name;
@@ -64,8 +65,9 @@
 
                 const card = document.createElement('div');
                 card.classList.add('card');
+                card.draggable = false;
                 card.appendChild(imgElement);
-                card.appendChild(nameElement);
+               // card.appendChild(nameElement);
 
                 itemsList.appendChild(card);
                 
