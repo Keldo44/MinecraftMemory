@@ -14,7 +14,10 @@
         <a href="./">Reiniciar</a>
     </div>
     <script>
-        const lifes = 8;
+
+        const MAX_lifes = 8;
+        let lives = MAX_lifes;
+        let points = 0;
         let revealedCards = 0;
         let rev1;
         let isChecking = false;
@@ -23,18 +26,18 @@
 
         function addHearts(){
             const lifeBar = document.getElementById("life-bar");
-            console.log(lifeBar);
-            for (var i = 0; i < lifes; i++){
+            
+            for (var i = 0; i < MAX_lifes; i++){
                 const heart = document.createElement('img');
                 heart.src = 'assets/icons/heart.png';
-                console.log(heart);
+                
                 lifeBar.appendChild(heart);
             }
         }
 
         async function fetchItems() {
             try {
-                const response = await fetch('http://kerion.ddns.net:3000/items');
+                const response = await fetch('http://localhost:3000/items');
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -79,20 +82,17 @@
         function revealCards() {
             const cards = document.querySelectorAll(".card");
             cards.forEach((card, index) => {
-               // console.log(`Revealing card ${index + 1}`);
+               
                 const values = [100, 200, 300, 400, 500, 200, 200, 300, 400, 500, 300, 300, 300, 400, 500, 400, 400, 400, 400, 500, 500, 500, 500, 500, 500];
                 setTimeout(() => {
                     //card.classList.add("reveal");
-                    //console.log(`Card ${index + 1} revealed`);
                 }, values[index % values.length]); // Adjust delay as needed
                 setTimeout(() => {
                     card.classList.add("reveal");
-                    //console.log(`Card ${index + 1} revealed`);
                 },  values[index % values.length]); // Adjust delay as needed
 
                 setTimeout(() => {
                     card.classList.remove("reveal");
-                    //console.log(`Card ${index + 1} revealed`);
                 }, values[index % values.length] + 3000); // Adjust delay as needed
             });
         }
@@ -124,9 +124,36 @@
 
                         // Check for a match after a short delay
                         setTimeout(() => {
-                            if (rev1.querySelector('img').src == rev2.querySelector('img').src) {
+                            let sameNameItems;
+                            if (rev1.querySelector('img').src == rev2.querySelector('img').src || rev1.querySelector('img').src.includes("/joker.gif") || rev2.querySelector('img').src.includes("/joker.gif")) {
+                                if(rev2.querySelector('img').src.includes("/joker.gif")){
+                                    console.log("rev2 es joker");
+                                    sameNameItems = Array.from(cards).filter(item => 
+                                        item.querySelector('img').src === rev1.querySelector('img').src && item !== rev1
+                                    );
+
+                                    sameNameItems[0].classList.add("reveal");
+                                    sameNameItems[0].classList.add("hidden");    
+
+                                    
+                                }else if (rev1.querySelector('img').src.includes("/joker.gif")){
+                                    console.log("rev1 es joker");
+                                    sameNameItems = Array.from(cards).filter(item => 
+                                        item.querySelector('img').src === rev2.querySelector('img').src && item !== rev2
+                                    );
+                                    sameNameItems[0].classList.add("reveal");
+                                        sameNameItems[0].classList.add("hidden"); 
+                                }
+                                
+                                
+                                damage(-1);
+                                
                                 rev1.classList.add("hidden");
                                 rev2.classList.add("hidden");
+                                
+                                if(points++ == 11){
+                                    youLost(false);
+                                }
                             } 
                             // If the cards do not match, hide them again
                             else {
@@ -148,25 +175,45 @@
         
         function damage(dmg) {
             const lifes = document.querySelectorAll("#life-bar>*");
-            console.log(lifes);
-            if (lifes[1].src.includes("void_heart.png")){
-             youLost();
+            
+            if(dmg > 0){
+                if (lifes[1].src.includes("void_heart.png")){
+                    youLost(true);
+                }
+                for (let i = lifes.length-1; i > -1; i--) {       
+                    
+                    if (lifes[i].src.includes("/heart.png")) {
+                        
+                        lifes[i].src = lifes[i].src.replace("heart.png", "void_heart.png");
+                        dmg--;
+                        if(dmg == 0){
+                            i = 0;
+                        }
+                    } 
+                }
+            }else if(dmg < 0){
+                for (let i = 0; i < lifes.length ; i++) {       
+                    if (lifes[i].src.includes("/void_heart.png")) {
+                        lifes[i].src = lifes[i].src.replace("void_heart.png","heart.png");
+                        dmg++;
+                        if(dmg == 0){
+                            i = lifes.length;
+                        }
+                    } 
+                }
             }
-            for (let i = lifes.length-1; i > -1; i--) {       
-                console.log(lifes[i]); 
-                if (lifes[i].src.includes("/heart.png")) {
-                    console.log(lifes[i]+"contains /heart.png");
-                    lifes[i].src = lifes[i].src.replace("heart.png", "void_heart.png");
-                    dmg--;
-                    if(dmg == 0){
-                        i = 0;
-                    }
-                } 
-            }
+            
         }
 
-        function youLost(){
-            document.getElementById("lost-screen").classList.add("show");
+        function youLost(var1){
+            const lostSc = document.getElementById("lost-screen");
+            if(!var1){
+                lostSc.classList.add("win");
+                lostSc.querySelector("p").innerHTML = "You Win";
+                lostSc.classList.add("show");
+            }else{
+                lostSc.classList.add("show");
+            }
         }
         fetchItems();
         addHearts();

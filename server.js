@@ -39,8 +39,13 @@ app.get('/items', (req, res) => {
         });
 
         items = shuffleArray(items);
-        items = items.slice(2, 15);
+        items = items.slice(0, 12);
         items = items.concat(items);
+        let joker = {
+            name: "joker",
+            img: 'assets/icons/joker.gif'
+        }
+        items = items.concat(joker);
         items = shuffleArray(items);
         items = items.slice(0, 25);
         

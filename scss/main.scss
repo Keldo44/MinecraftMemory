@@ -29,7 +29,7 @@ body{
         right: 0;
         &>.card{
             cursor: pointer;
-            width: calc(20% - 25px * 4 / 5);
+            width: calc((100% / 5) - 25px * 4 / 5);
             aspect-ratio: 1;
             object-fit: contain;
             image-rendering: pixelated;
@@ -95,6 +95,9 @@ body{
             opacity: 1;
             pointer-events: all;
         }
+        &.win{
+            background: radial-gradient(circle, transparent, lightgreen) ;
+        }
         position: fixed;
         opacity:0;
         pointer-events: none;
@@ -130,3 +133,20 @@ body{
         }
     }
 }
+.shake{
+    animation-name: shaking;    
+  animation-duration: 0.5s; 
+  animation-timing-function: ease-out; 
+  animation-delay: 0s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running; 
+}
+@keyframes shaking {
+    0% { transform: translateX(0) }
+    25% { transform: translateX(5px) }
+    50% { transform: translateX(-5px) }
+    75% { transform: translateX(5px) }
+    100% { transform: translateX(0) }
+   }

@@ -101,6 +101,9 @@ body #lost-screen.show {
   opacity: 1;
   pointer-events: all;
 }
+body #lost-screen.win {
+  background: radial-gradient(circle, transparent, lightgreen);
+}
 body #lost-screen p {
   font-size: 4em;
   text-shadow: 2px 2px #000;
@@ -123,6 +126,35 @@ body #lost-screen a {
 }
 body #lost-screen > * {
   width: fit-content;
+}
+
+.shake {
+  animation-name: shaking;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
+}
+
+@keyframes shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
